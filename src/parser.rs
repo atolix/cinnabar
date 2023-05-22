@@ -2,8 +2,10 @@ use crate::tokenizer::Token;
 
 #[derive(Debug, Clone)]
 pub enum AST {
+    String(String),
     Number(f64),
     BinaryOp(Box<AST>, Operator, Box<AST>),
+    Print(Box<AST>)
 }
 
 #[derive(Debug, Clone)]
@@ -40,6 +42,7 @@ fn parse_primary(tokens: &[Token]) -> (AST, &[Token]) {
     match tokens.split_first() {
         Some((Token::Number(value), rest_tokens)) => (AST::Number(*value), rest_tokens),
         Some((Token::LParen, rest_tokens)) => parse_within_parenthesis(rest_tokens),
+        Some((Token::Print, rest_tokens)) => parse_print(rest_tokens),
         _ => panic!("Expected a number"),
     }
 }
@@ -59,6 +62,26 @@ fn parse_term(tokens: &[Token]) -> (AST, &[Token]) {
     }
 
     (parsed_tokens, tokens)
+}
+
+fn parse_print(tokens: &[Token]) -> (AST, &[Token]) {
+    match tokens.split_first() {
+        Some((Token::LParen, rest_tokens)) => {
+            let (ast, rest_tokens) = parse_string(rest_tokens);
+            match rest_tokens.split_first() {
+                Some((Token::RParen, rest_tokens)) => (AST::Print(Box::new(ast)), rest_tokens),
+                _ => panic!("Expected a closing parenthesis"),
+            }
+        }
+        _ => panic!("Expected an opening parenthesis"),
+    }
+}
+
+fn parse_string(tokens: &[Token]) -> (AST, &[Token]) {
+    match tokens.split_first() {
+        Some((Token::String(s), rest_tokens)) => (AST::String(s.clone()), rest_tokens),
+        _ => panic!("Expected a string"),
+    }
 }
 
 fn parse_within_parenthesis(tokens: &[Token]) -> (AST, &[Token]) {
