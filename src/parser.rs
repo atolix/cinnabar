@@ -46,10 +46,15 @@ fn parse_primary(tokens: &[Token]) -> (AST, &[Token]) {
 fn parse_term(tokens: &[Token]) -> (AST, &[Token]) {
     let (mut parsed_tokens, mut tokens) = parse_primary(tokens);
 
-    while let Some((Token::Operator(Operator::Multiply), rest_tokens)) = tokens.split_first() {
-        let (right, new_tokens) = parse_primary(rest_tokens);
-        parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Operator::Multiply, Box::new(right));
-        tokens = new_tokens;
+    while let Some((Token::Operator(op), rest_tokens)) = tokens.split_first() {
+        match op {
+            Operator::Multiply | Operator::Divide => {
+                let (right, new_tokens) = parse_primary(rest_tokens);
+                parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), op.clone(), Box::new(right));
+                tokens = new_tokens;
+            }
+            _ => break,
+        }
     }
 
     (parsed_tokens, tokens)
