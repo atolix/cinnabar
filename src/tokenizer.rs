@@ -5,8 +5,6 @@ pub enum Token {
     Minus,
     Multiply,
     Divide,
-    LParen,
-    RParen,
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
@@ -46,14 +44,6 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
             '/' => {
                 chars.next();
                 tokens.push(Token::Divide);
-            }
-            '(' => {
-                chars.next();
-                tokens.push(Token::LParen);
-            }
-            ')' => {
-                chars.next();
-                tokens.push(Token::RParen);
             }
             ' ' => {
                 chars.next();
