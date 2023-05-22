@@ -3,7 +3,7 @@ use crate::tokenizer::Token;
 #[derive(Debug, Clone)]
 pub enum AST {
     Number(f64),
-    BinaryOp(Box<AST>, Token, Box<AST>),
+    BinaryOp(Box<AST>, Operator, Box<AST>),
 }
 
 #[derive(Debug, Clone)]
@@ -22,7 +22,7 @@ pub fn parse(mut tokens: &[Token]) -> AST {
         match tokens.split_first() {
             Some((Token::Operator(op), rest_tokens)) => {
                 let (right, rest_tokens) = parse_term(rest_tokens);
-                parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Token::Operator(op.clone()), Box::new(right));
+                parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), op.clone(), Box::new(right));
                 tokens = rest_tokens;
             }
             _ => break,
@@ -48,7 +48,7 @@ fn parse_term(tokens: &[Token]) -> (AST, &[Token]) {
 
     while let Some((Token::Operator(Operator::Multiply), rest_tokens)) = tokens.split_first() {
         let (right, new_tokens) = parse_primary(rest_tokens);
-        parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Token::Operator(Operator::Multiply), Box::new(right));
+        parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Operator::Multiply, Box::new(right));
         tokens = new_tokens;
     }
 
