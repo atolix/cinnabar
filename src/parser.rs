@@ -39,6 +39,7 @@ pub fn parse(mut tokens: &[Token]) -> AST {
 fn parse_primary(tokens: &[Token]) -> (AST, &[Token]) {
     match tokens.split_first() {
         Some((Token::Number(value), rest_tokens)) => (AST::Number(*value), rest_tokens),
+        Some((Token::LParen, rest_tokens)) => parse_within_parenthesis(rest_tokens),
         _ => panic!("Expected a number"),
     }
 }
@@ -59,3 +60,36 @@ fn parse_term(tokens: &[Token]) -> (AST, &[Token]) {
 
     (parsed_tokens, tokens)
 }
+
+fn parse_within_parenthesis(tokens: &[Token]) -> (AST, &[Token]) {
+    let mut tokens = tokens;
+    let mut parenthesis_nesting_level = 1;
+    let mut tokens_within_parenthesis = vec![];
+
+    while parenthesis_nesting_level > 0 {
+        match tokens.split_first() {
+            Some((Token::LParen, rest_tokens)) => {
+                parenthesis_nesting_level += 1;
+                tokens_within_parenthesis.push(Token::LParen);
+                tokens = rest_tokens;
+            }
+            Some((Token::RParen, rest_tokens)) => {
+                parenthesis_nesting_level -= 1;
+                if parenthesis_nesting_level > 0 {
+                    tokens_within_parenthesis.push(Token::RParen);
+                }
+                tokens = rest_tokens;
+            }
+            Some((token, rest_tokens)) => {
+                tokens_within_parenthesis.push(token.clone());
+                tokens = rest_tokens;
+            }
+            _ => panic!("Invalid parenthesis"),
+        }
+    }
+
+    let ast = parse(&tokens_within_parenthesis);
+
+    (ast, tokens)
+}
+

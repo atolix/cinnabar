@@ -5,6 +5,8 @@ use std::collections::HashMap;
 pub enum Token {
     Number(f64),
     Operator(Operator),
+    LParen,
+    RParen,
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
@@ -34,6 +36,14 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
 
                 let number: f64 = number.parse().unwrap();
                 tokens.push(Token::Number(number));
+            }
+            '(' => {
+                chars.next();
+                tokens.push(Token::LParen);
+            }
+            ')' => {
+                chars.next();
+                tokens.push(Token::RParen);
             }
             ' ' => {
                 chars.next();

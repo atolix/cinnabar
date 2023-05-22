@@ -7,9 +7,11 @@ use tokenizer::tokenize;
 use evaluator::evaluate;
 
 fn main() {
-    let input = "1 + 5 * 4 * 5 / 4";
-    let tokens = tokenize(&input).unwrap();
+    let input = "(1 + 5) * 6";
+    let tokens = tokenize(input).unwrap();
+    println!("{:?}", tokens);
     let ast = parse(&tokens);
+    println!("{:?}", ast);
     let result: f64 = evaluate(&ast);
     println!("{:?}", result);
 }
