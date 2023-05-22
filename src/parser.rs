@@ -15,14 +15,14 @@ pub enum Operator {
 }
 
 pub fn parse(mut tokens: &[Token]) -> AST {
-    let (mut left, rest_tokens) = parse_term(tokens);
+    let (mut parsed_tokens, rest_tokens) = parse_term(tokens);
     tokens = rest_tokens;
 
     while !tokens.is_empty() {
         match tokens.split_first() {
             Some((Token::Operator(op), rest_tokens)) => {
                 let (right, rest_tokens) = parse_term(rest_tokens);
-                left = AST::BinaryOp(Box::new(left), Token::Operator(op.clone()), Box::new(right));
+                parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Token::Operator(op.clone()), Box::new(right));
                 tokens = rest_tokens;
             }
             _ => break,
@@ -30,7 +30,7 @@ pub fn parse(mut tokens: &[Token]) -> AST {
     }
 
     if tokens.is_empty() {
-    left
+        parsed_tokens
     } else {
         panic!("Unexpected token");
     }
@@ -44,13 +44,13 @@ fn parse_primary(tokens: &[Token]) -> (AST, &[Token]) {
 }
 
 fn parse_term(tokens: &[Token]) -> (AST, &[Token]) {
-    let (mut left, mut tokens) = parse_primary(tokens);
+    let (mut parsed_tokens, mut tokens) = parse_primary(tokens);
 
     while let Some((Token::Operator(Operator::Multiply), rest_tokens)) = tokens.split_first() {
         let (right, new_tokens) = parse_primary(rest_tokens);
-        left = AST::BinaryOp(Box::new(left), Token::Operator(Operator::Multiply), Box::new(right));
+        parsed_tokens = AST::BinaryOp(Box::new(parsed_tokens), Token::Operator(Operator::Multiply), Box::new(right));
         tokens = new_tokens;
     }
 
-    (left, tokens)
+    (parsed_tokens, tokens)
 }
