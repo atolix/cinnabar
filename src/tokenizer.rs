@@ -1,14 +1,21 @@
 use crate::parser::Operator;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub enum Token {
     Number(f64),
-    Operator(Operator)
+    Operator(Operator),
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
     let mut tokens = Vec::new();
     let mut chars = input.chars().peekable();
+
+    let mut operators = HashMap::new();
+    operators.insert('+', Operator::Plus);
+    operators.insert('-', Operator::Minus);
+    operators.insert('*', Operator::Multiply);
+    operators.insert('/', Operator::Divide);
 
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -28,26 +35,17 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
                 let number: f64 = number.parse().unwrap();
                 tokens.push(Token::Number(number));
             }
-            '+' => {
-                chars.next();
-                tokens.push(Token::Operator(Operator::Plus));
-            }
-            '-' => {
-                chars.next();
-                tokens.push(Token::Operator(Operator::Minus));
-            }
-            '*' => {
-                chars.next();
-                tokens.push(Token::Operator(Operator::Multiply));
-            }
-            '/' => {
-                chars.next();
-                tokens.push(Token::Operator(Operator::Divide));
-            }
             ' ' => {
                 chars.next();
             }
-            _ => return Err(format!("Unexpected character: {}", ch)),
+            _ => {
+                if let Some(op) = operators.get(&ch) {
+                    chars.next();
+                    tokens.push(Token::Operator(op.clone()));
+                } else {
+                    return Err(format!("Unexpected character: {}", ch));
+                }
+            }
         }
     }
 
