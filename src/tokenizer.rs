@@ -1,10 +1,9 @@
-#[derive(Debug, Clone, PartialEq)]
+use crate::parser::Operator;
+
+#[derive(Debug, Clone)]
 pub enum Token {
     Number(f64),
-    Plus,
-    Minus,
-    Multiply,
-    Divide,
+    Operator(Operator)
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
@@ -31,19 +30,19 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
             }
             '+' => {
                 chars.next();
-                tokens.push(Token::Plus);
+                tokens.push(Token::Operator(Operator::Plus));
             }
             '-' => {
                 chars.next();
-                tokens.push(Token::Minus);
+                tokens.push(Token::Operator(Operator::Minus));
             }
             '*' => {
                 chars.next();
-                tokens.push(Token::Multiply);
+                tokens.push(Token::Operator(Operator::Multiply));
             }
             '/' => {
                 chars.next();
-                tokens.push(Token::Divide);
+                tokens.push(Token::Operator(Operator::Divide));
             }
             ' ' => {
                 chars.next();

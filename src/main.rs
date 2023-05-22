@@ -1,8 +1,12 @@
+mod parser;
 mod tokenizer;
+
+use parser::parse;
 use tokenizer::tokenize;
 
 fn main() {
-    let input = "2 + 3 * 4 - (1 + 2) / 3";
-    let tokens = tokenize(input);
-    println!("{:?}", tokens);
+    let input = "1 + 5 * 4";
+    let tokens = tokenize(&input).unwrap();
+    let ast = parse(&tokens);
+    println!("{:?}", ast);
 }
