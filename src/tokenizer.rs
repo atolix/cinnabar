@@ -3,12 +3,10 @@ use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub enum Token {
-    String(String),
     Number(f64),
     Operator(Operator),
     LParen,
     RParen,
-    Print,
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
@@ -46,31 +44,6 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
             ')' => {
                 chars.next();
                 tokens.push(Token::RParen);
-            }
-            'a'..='z' | 'A'..='Z' => {
-                let mut word = String::new();
-                while let Some('a'..='z') | Some('A'..='Z') = chars.peek() {
-                    word.push(chars.next().unwrap());
-                }
-                // print関数を検出する
-                match word.as_str() {
-                    "print" => tokens.push(Token::Print),
-                    _ => return Err(format!("Unexpected word: {}", word)),
-                }
-            }
-            '"' => {
-                chars.next();
-                let mut string: String = String::new();
-                while let Some(&ch) = chars.peek() {
-                    match ch {
-                        '"' => {
-                            chars.next();
-                            break;
-                        }
-                        _ => string.push(chars.next().unwrap()),
-                    }
-                }
-                tokens.push(Token::String(string));
             }
             ' ' => {
                 chars.next();

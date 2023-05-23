@@ -14,20 +14,5 @@ pub fn evaluate(ast: &AST) -> f64 {
                 Operator::Divide => left_value / right_value,
             }
         }
-        AST::Print(inner) => {
-            match &**inner {
-                AST::String(s) => {
-                    println!("{}", s);
-                }
-                _ => {
-                    let value = evaluate(&*inner);
-                    println!("{}", value);
-                }
-            }
-            0.0
-        }
-        AST::String(_) => {
-            panic!("String should not be evaluated");
-        }
     }
 }
