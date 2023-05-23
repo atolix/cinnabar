@@ -1,14 +1,16 @@
+mod evaluator;
 mod parser;
 mod tokenizer;
-mod evaluator;
 
-use parser::parse;
-use tokenizer::tokenize;
 use evaluator::evaluate;
+use parser::parse;
+use std::io;
+use tokenizer::tokenize;
 
 fn main() {
-    let input = "( 2 + 5 + 7) - ((3 + 2) * 4 / 5)";
-    let tokens = tokenize(input).unwrap();
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).ok();
+    let tokens = tokenize(&input.trim().to_string()).unwrap();
     println!("{:?}", tokens);
     let ast = parse(&tokens);
     println!("{:?}", ast);
