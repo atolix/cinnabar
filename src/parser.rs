@@ -8,8 +8,8 @@ pub enum AST {
 
 #[derive(Debug, Clone)]
 pub enum Operator {
-    Plus,
-    Minus,
+    Add,
+    Subtract,
     Multiply,
     Divide,
 }

@@ -8,8 +8,8 @@ pub fn evaluate(ast: &AST) -> f64 {
             let left_value = evaluate(&*left);
             let right_value = evaluate(&*right);
             match op {
-                Operator::Plus => left_value + right_value,
-                Operator::Minus => left_value - right_value,
+                Operator::Add => left_value + right_value,
+                Operator::Subtract => left_value - right_value,
                 Operator::Multiply => left_value * right_value,
                 Operator::Divide => left_value / right_value,
             }

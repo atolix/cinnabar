@@ -32,11 +32,11 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
             }
             '+' => {
                 chars.next();
-                tokens.push(Token::Operator(Operator::Plus));
+                tokens.push(Token::Operator(Operator::Add));
             }
             '-' => {
                 chars.next();
-                tokens.push(Token::Operator(Operator::Minus));
+                tokens.push(Token::Operator(Operator::Subtract));
             }
             '*' => {
                 chars.next();
