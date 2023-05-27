@@ -9,7 +9,7 @@ pub enum Token {
 }
 
 pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
-    let mut tokens = Vec::new();
+    let mut tokens = vec![];
     let mut chars = input.chars().peekable();
 
     while let Some(&ch) = chars.peek() {
